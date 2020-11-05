@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// List view that shows all existing entries.
 public class OverallView implements ListView {
 	
 	List<ListRow> entries;

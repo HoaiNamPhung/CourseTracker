@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-// Fully implemented, only change if something should be fixed/think this should be converted to an interface/abstract class.
 // Contains all instance field members visible to user when they're on a list view.
 public class ListRow {
 

@@ -2,6 +2,7 @@ package application;
 
 import java.time.LocalDateTime;
 
+// Interface for manipulating a list.
 public interface ListView {
 	
 	// SQLite, perhaps? File system is fine too.
