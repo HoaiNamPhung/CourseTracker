@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 // Interface for manipulating a list.
 public interface ListView {
 	
-	// SQLite, perhaps? File system is fine too.
+	// Use the SQLite database -- see the methods I implemented in Database.java. Message me (Asyrium) on Discord if it's not working correctly.
 	// If list doesn't exist, create a new one. If it does exist, query for all rows from storage system and initialize them in the app as a list.
 	// Afterward, make the list visible.
 	// Return number of rows initialized; thus, 0 if a new list was created.
