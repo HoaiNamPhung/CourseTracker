@@ -16,7 +16,7 @@ public class OverallView implements ListView {
 	@Override
 	public int initializeList() {
 		// TODO:
-		// Query into storage and get ALL rows
+		// Query into SQLite database and get ALL rows.
 		// Add the rows to entries.
 		// Display entries as a list using GUI.
 		return 0;

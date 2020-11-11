@@ -52,6 +52,14 @@ public class ListRow {
 	public void setTime(LocalTime time) {
 		this.dateTime = dateTime.toLocalDate().atTime(time);
 	}
+	
+	public LocalDateTime getDateTime() {
+		return dateTime;
+	}
+	
+	public void setDateTime(LocalDateTime dateTime) {
+		this.dateTime = dateTime;
+	}
 
 	public String getDescription() {
 		return description;
