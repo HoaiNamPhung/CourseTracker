@@ -9,18 +9,18 @@ public interface ListView {
 	// If list doesn't exist, create a new one. If it does exist, query for all rows from storage system and initialize them in the app as a list.
 	// Afterward, make the list visible.
 	// Return number of rows initialized; thus, 0 if a new list was created.
-	public int initializeList();
+	public int initializeList(Database db);
 
 	// Booleans return true if successful, false if failed.
-	boolean createEntry(Entry entry);
-	boolean createNote(String course, String name, String description, String notes);
-	boolean createTask(String course, String name, LocalDateTime dateTime, String description);
+	boolean createEntry(Database db, Entry entry);
+	boolean createNote(Database db, String course, String name, String description, String notes);
+	boolean createTask(Database db, String course, String name, LocalDateTime dateTime, String description);
 	
 	// Deletion/update based on id, which will automatically be supplied by system when user acts on the corresponding row.
-	boolean deleteEntry(int id);
-	boolean modifyEntryCourse(int id, String course);
-	boolean modifyEntryName(int id, String name);
-	boolean modifyEntryDateTime(int id, LocalDateTime dateTime);
-	boolean modifyEntryDescription(int id, String description);
-	boolean modifyEntryNotes(int id, String notes);
+	boolean deleteEntry(Database db, int id);
+	boolean modifyEntryCourse(Database db, int id, String course);
+	boolean modifyEntryName(Database db, int id, String name);
+	boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime);
+	boolean modifyEntryDescription(Database db, int id, String description);
+	boolean modifyEntryNotes(Database db, int id, String notes);
 }

@@ -2,6 +2,9 @@ package application;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sqlite.SQLiteDataSource;
 
 // If SQLite not being recognized, go to Project > Properties > Java Build Path > Add JARs > CourseTracker > sqlite-jdbc-3.32.3.2.jar > OK > Apply and Close
@@ -14,6 +17,7 @@ public class Database {
 	 * Constructor
 	 */
 	public Database() {
+		this.open();
 	}
 	
 	/**
@@ -90,7 +94,7 @@ public class Database {
 	 * @param name The name of the entry.
 	 * @param datetime The date and time of the entry.
 	 * @param description The description of the entry.
-	 * @return Returns -1 if exception occurs, wrong parameters for given tablename, or invalid table. Otherwise, returns number of rows inserted (1).
+	 * @return Returns -1 if exception occurs, wrong parameters for given tablename, or invalid table. Otherwise, returns id of inserted row.
 	 */
 	public int insert(String tablename, String course, String name, LocalDateTime datetime, String description) {
 		int result = -1;
@@ -106,9 +110,17 @@ public class Database {
 				stmt.setString(3, datetime.toString());
 				stmt.setString(4, description);
 				result = stmt.executeUpdate();
+				
+				// Get the new id of the row for returning. If no rows were added, return result as-is.
+				if (result >= 1) {
+					ResultSet id = stmt.getGeneratedKeys();
+					if (id.next()) {
+						result = (int) (id.getLong(1));
+					}
+				}
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				result = -1;
 			}
 		}
@@ -130,7 +142,7 @@ public class Database {
 	 * @param tablename The table being inserted into.
 	 * @param coursename The name of the new course.
 	 * @param meetingdatetime The meeting date and time of the new course.
-	 * @return Returns -1 if exception occurs, wrong parameters for given tablename, or invalid table. Otherwise, returns number of rows inserted (1).
+	 * @return Returns -1 if exception occurs, wrong parameters for given tablename, or invalid table. Otherwise, returns id of inserted row.
 	 */
 	public int insert(String tablename, String coursename, LocalDateTime meetingdatetime) {
 		int result = -1;
@@ -144,9 +156,17 @@ public class Database {
 				stmt.setString(1, coursename);
 				stmt.setString(2, meetingdatetime.toString());
 				result = stmt.executeUpdate();
+				
+				// Get the new id of the row for returning. If no rows were added, return result as-is.
+				if (result >= 1) {
+					ResultSet id = stmt.getGeneratedKeys();
+					if (id.next()) {
+						result = (int) (id.getLong(1));
+					}
+				}
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				result = -1;
 			}
 		}
@@ -184,7 +204,7 @@ public class Database {
 			result = stmt.executeUpdate();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			result = -1;
 		}
 		
@@ -217,7 +237,7 @@ public class Database {
 			result = stmt.executeUpdate();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			result = -1;
 		}
 		
@@ -248,10 +268,10 @@ public class Database {
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
-			result = parseResultSet(tablename, rs);
+			result = parseResultSet(tablename, rs).get(0);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			result = null;
 		}
 		
@@ -263,6 +283,64 @@ public class Database {
 			catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Query for rows from the table belonging to a course. If null is used instead of a course, retrieve all rows.
+	 * @param tablename The table being queried from.
+	 * @param course The course of the rows to query for. If null, query for all rows regardless of course.
+	 * @return Returns a list of rows as arrays. Returns null if failed.
+	 */
+	public List<String[]> queryAll(String tablename, String course) {
+		List<String[]> result = new ArrayList<>();
+		Connection conn = null;
+		String query = null;
+		boolean allFlag = false;
+		
+		// With a course specifier, this only works with the entries database.
+		if (course != null) {
+			if (tablename.equals("entries")) {
+				query = "SELECT * FROM " + tablename + " WHERE course=?";
+			}
+			else {
+				return null;
+			}
+		}
+		// Works for both the courses and entries database if null is used in place of course specifier.
+		else {
+			allFlag = true;
+			query = "SELECT * FROM " + tablename;
+		}
+		
+		
+		try {
+			conn = ds.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(query);
+			if (allFlag != true) {
+				stmt.setString(1, course);
+			}
+			ResultSet rs = stmt.executeQuery();
+			result = parseResultSet(tablename, rs);
+		}
+		catch (Exception e) {
+			// e.printStackTrace();
+			result = null;
+		}
+		
+		// Close connection to database.
+		if (conn != null) {
+			try {
+				conn.close();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (result.isEmpty()) {
+			return null;
 		}
 		return result;
 	}
@@ -282,7 +360,7 @@ public class Database {
 			result = stmt.executeUpdate(query);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			result = -1;
 		}
 		
@@ -299,12 +377,13 @@ public class Database {
 	}
 	
 	/**
-	 * Parse the ResultSet and convert it to an array.
+	 * Parse the ResultSet and convert it to a list of rows as arrays.
 	 * @param tablename The table the ResultSet was obtained (queried) from.
 	 * @param rs The ResultSet.
-	 * @return Returns the ResultSet as an array.
+	 * @return Returns the ResultSet as a list of rows as arrays.
 	 */
-	public String[] parseResultSet(String tablename, ResultSet rs) {
+	public List<String[]> parseResultSet(String tablename, ResultSet rs) {
+		List<String[]> rows = new ArrayList<>();
 		if (tablename.equals("courses")) {
 			try {
 				while (rs.next()) {
@@ -312,11 +391,12 @@ public class Database {
 			        String coursename = rs.getString(2);
 			        String meetingdatetime = rs.getString(3);	    
 			        String row[] = {Integer.toString(id), coursename, meetingdatetime};
-			        return row;
+			        rows.add(row);
 				}
+				return rows;
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		else if (tablename.equals("entries")) {
@@ -329,8 +409,9 @@ public class Database {
 			        String description = rs.getString(5);
 			        String notes = rs.getString(6);
 			        String row[] = {Integer.toString(id), course, name, datetime, description, notes};
-			        return row;
+			        rows.add(row);
 				}
+				return rows;
 			}
 			catch (Exception e) {
 				e.printStackTrace();

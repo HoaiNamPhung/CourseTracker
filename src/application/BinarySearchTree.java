@@ -28,7 +28,7 @@ public class BinarySearchTree {
 	public BinarySearchTree() {
 		this.root = null;
 	}
-
+	
 	/**
 	 * Search for a node using the key's key. 
 	 * (I would prefer to search using id, but such is difficult since BST is traversed using DateTime.)

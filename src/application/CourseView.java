@@ -38,7 +38,7 @@ public class CourseView implements ListView {
 	/** General list view methods for manipulating entries in our list */
 	
 	@Override
-	public int initializeList() {
+	public int initializeList(Database db) {
 		// TODO:
 		// Query into storage using courseName column and get all corresponding rows
 		// Add the rows to entries.
@@ -47,55 +47,55 @@ public class CourseView implements ListView {
 	}
 	
 	@Override
-	public boolean createEntry(Entry entry) {
+	public boolean createEntry(Database db, Entry entry) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean createNote(String course, String name, String description, String notes) {
+	public boolean createNote(Database db, String course, String name, String description, String notes) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean createTask(String course, String name, LocalDateTime dateTime, String description) {
+	public boolean createTask(Database db, String course, String name, LocalDateTime dateTime, String description) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean deleteEntry(int id) {
+	public boolean deleteEntry(Database db, int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryCourse(int id, String course) {
+	public boolean modifyEntryCourse(Database db, int id, String course) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryName(int id, String name) {
+	public boolean modifyEntryName(Database db, int id, String name) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryDateTime(int id, LocalDateTime dateTime) {
+	public boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryDescription(int id, String description) {
+	public boolean modifyEntryDescription(Database db, int id, String description) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryNotes(int id, String notes) {
+	public boolean modifyEntryNotes(Database db, int id, String notes) {
 		// TODO Auto-generated method stub
 		return false;
 	}

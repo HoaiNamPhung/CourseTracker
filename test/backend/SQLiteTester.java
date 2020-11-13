@@ -3,6 +3,7 @@ package backend;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,19 +19,23 @@ class SQLiteTester {
 	void test() {
 		LocalDateTime now = LocalDateTime.now();
 		Database db = new Database();
+		List<Integer> ids = new ArrayList<>();
 		db.open();
 		db.drop("entries");
 		db.createTable("entries");
-		db.insert("entries", "cs151", "Assignment 4a", now, null);
+		ids.add(db.insert("entries", "cs151", "Assignment 4a", now, null));
 		db.update("entries", 1, "notes", "These are indeed notes.");
-		db.insert("entries", "cs151", "Assignment 4b", now.plusHours(1), null);
-		db.insert("entries", "cs151", "Notes", now, null);
-		db.insert("entries", "cs149", "HW6", now.minusHours(2), null);
-		db.insert("entries", "cs149", "Notes", now.minusHours(1), null);
-		db.insert("entries", null, "Interview", now.minusHours(3), null);
-		db.insert("entries", "cs161", "Study", now, null);
-		db.insert("entries", "cs161", "Study!!", now, null);
-		db.insert("entries", "cs185", "Project", now.minusHours(2), null);
+		ids.add(db.insert("entries", "cs151", "Assignment 4b", now.plusHours(1), null));
+		ids.add(db.insert("entries", "cs151", "Notes", now, null));
+		ids.add(db.insert("entries", "cs149", "HW6", now.minusHours(2), null));
+		ids.add(db.insert("entries", "cs149", "Notes", now.minusHours(1), null));
+		ids.add(db.insert("entries", null, "Interview", now.minusHours(3), null));
+		ids.add(db.insert("entries", "cs161", "Study", now, null));
+		ids.add(db.insert("entries", "cs161", "Study!!", now, null));
+		ids.add(db.insert("entries", "cs185", "Project", now.minusHours(2), null));
+		for (int i = 1; i <= ids.size(); i++) {
+			assertEquals((int) ids.get(i - 1), i, "Inserted entry into database has unexpected id. Check insertion implementation.");
+		}
 		String[] rsEntries1 = db.query("entries", 1);
 		String[] rsEntries2 = db.query("entries", 2);
 		String[] rsEntries3 = db.query("entries", 3);
@@ -92,6 +97,42 @@ class SQLiteTester {
 		System.out.println(Arrays.toString(rsCourses2));
 		System.out.println(Arrays.toString(rsCourses3));
 		System.out.println("------------------------------");
+		
+		// Test queryAll().
+		List<String[]> allCourses = db.queryAll("courses", null);
+		List<String[]> failedQuery = db.queryAll("courses", "cs151");
+		List<String[]> allEntries = db.queryAll("entries", null);
+		List<String[]> entriesCs151 = db.queryAll("entries", "cs151");
+		List<String[]> entriesCs149 = db.queryAll("entries", "cs149");
+		List<String[]> entriesCs147 = db.queryAll("entries", "cs147");
+		
+		assertEquals(allCourses.size(), 2, "Incorrect number of courses read. Check queryAll() implementation.");
+		assertEquals(failedQuery, null, "Incorrect number of courses read. Check queryAll() implementation.");
+		assertEquals(allEntries.size(), 9, "Incorrect number of courses read. Check queryAll() implementation.");
+		assertEquals(entriesCs151.size(), 3, "Incorrect number of courses read. Check queryAll() implementation.");
+		assertEquals(entriesCs149.size(), 2, "Incorrect number of courses read. Check queryAll() implementation.");
+		assertEquals(entriesCs147, null, "Incorrect number of courses read. Check queryAll() implementation.");
+		
+		System.out.println("All courses:");
+		for (String[] row : allCourses) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println("======");
+		System.out.println("All entries:");
+		for (String[] row : allEntries) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println("======");
+		System.out.println("All entries for CS151:");
+		for (String[] row : entriesCs151) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println("======");
+		System.out.println("All entries for CS149:");
+		for (String[] row : entriesCs149) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println("======");
 	}
 
 }
