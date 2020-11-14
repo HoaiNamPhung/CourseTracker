@@ -9,30 +9,32 @@ import java.util.List;
 public class OverallView implements ListView {
 	
 	BinarySearchTree entries;
+	List<Entry> sortedEntries;
 
-	public OverallView(String courseName, LocalDateTime courseMeetingDateTime) {
+	public OverallView() {
 		this.entries = new BinarySearchTree();
+		this.sortedEntries = null;
 	}
 	
 	@Override
 	/**
-	 * Initializes the list of all entries from database and displays it chronologically on the screen.
-	 * return Returns -1 if failed.
+	 * Initializes the list of all entries from database as a sorted list of entries.
+	 * return Returns 1 if successfully initialized. Else, return 0 on failure.
 	 */
 	public int initializeList(Database db) {
 		// Query into SQLite database and get ALL rows.
 		List<String[]> allEntries = db.queryAll("entries", null);
 		
 		// Add the rows to entries if entries exist.
-		List<Entry> sortedEntries = null;
 		if (allEntries != null) {
 			for (String[] row : allEntries) {
 				entries.insert(new Entry(row));
 			}
-			sortedEntries = entries.inorderTraversal();
+			this.sortedEntries = entries.inorderTraversal();
 		}
-		
-		// TODO: Display entries as a list using GUI. (Use sortedEntries for this; if it's null, no entries will be displayed in GUI).
+		if (sortedEntries != null) {
+			return 1;
+		}
 		return 0;
 	}
 	
@@ -168,4 +170,8 @@ public class OverallView implements ListView {
 		return false;
 	}
 
+	@Override
+	public List<Entry> getSortedEntries() {
+		return sortedEntries;
+	}
 }

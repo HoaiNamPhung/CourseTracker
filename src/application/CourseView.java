@@ -9,12 +9,14 @@ public class CourseView implements ListView {
 	
 	private String courseName;
 	private LocalDateTime courseMeetingDateTime;
-	private List<ListRow> entries;
+	private BinarySearchTree entries;
+	private List<Entry> sortedEntries;
 	
 	public CourseView(String courseName, LocalDateTime courseMeetingDateTime) {
 		this.courseName = courseName;
 		this.courseMeetingDateTime = courseMeetingDateTime;
-		this.entries = new ArrayList<>();
+		this.entries = new BinarySearchTree();
+		this.sortedEntries = null;
 	}
 	
 	/** Course specific methods */
@@ -100,6 +102,9 @@ public class CourseView implements ListView {
 		return false;
 	}
 	
-	
+	@Override
+	public List<Entry> getSortedEntries() {
+		return sortedEntries;
+	}
 	
 }

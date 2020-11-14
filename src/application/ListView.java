@@ -1,6 +1,7 @@
 package application;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 // Interface for manipulating a list.
 public interface ListView {
@@ -23,4 +24,7 @@ public interface ListView {
 	boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime);
 	boolean modifyEntryDescription(Database db, int id, String description);
 	boolean modifyEntryNotes(Database db, int id, String notes);
+	
+	// Retrieve the sorted list view.
+	List<Entry> getSortedEntries();
 }
