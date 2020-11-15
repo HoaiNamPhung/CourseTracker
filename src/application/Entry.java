@@ -12,10 +12,14 @@ public class Entry extends ListRow {
 	
 	// Constructor given an array return value that was queried from our SQLite database.
 	public Entry(String[] colArr) {
-		setId(Integer.parseInt(colArr[0]));
+		if (colArr[0] != null && !(colArr[0].equals(""))) {
+			setId(Integer.parseInt(colArr[0]));
+		}
 		setCourse(colArr[1]);
 		setName(colArr[2]);
-		setDateTime(LocalDateTime.parse(colArr[3]));
+		if (colArr[3] != null && !(colArr[3].equals("")))  {
+			setDateTime(LocalDateTime.parse(colArr[3]));
+		}
 		setDescription(colArr[4]);
 		setNotes(colArr[5]);
 	}

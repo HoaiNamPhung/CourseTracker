@@ -37,6 +37,15 @@ public class Database {
 		return true;
 	}
 	
+	public boolean initializeDatabase() {
+		int rv1 = createTable("courses");
+		int rv2 = createTable("entries");
+		if ((rv1 & rv2) == 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Create a table in the database (either 'courses' or 'entries').
 	 * @param tablename The table to create.
@@ -107,7 +116,7 @@ public class Database {
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.setString(1, course);
 				stmt.setString(2, name);
-				stmt.setString(3, datetime.toString());
+				stmt.setString(3, MyDateTime.toString(datetime));
 				stmt.setString(4, description);
 				result = stmt.executeUpdate();
 				
@@ -120,7 +129,7 @@ public class Database {
 				}
 			}
 			catch (Exception e) {
-				// e.printStackTrace();
+				e.printStackTrace();
 				result = -1;
 			}
 		}
@@ -154,7 +163,7 @@ public class Database {
 				conn = ds.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.setString(1, coursename);
-				stmt.setString(2, meetingdatetime.toString());
+				stmt.setString(3, MyDateTime.toString(meetingdatetime));
 				result = stmt.executeUpdate();
 				
 				// Get the new id of the row for returning. If no rows were added, return result as-is.
@@ -291,7 +300,7 @@ public class Database {
 	 * Query for rows from the table belonging to a course. If null is used instead of a course, retrieve all rows.
 	 * @param tablename The table being queried from.
 	 * @param course The course of the rows to query for. If null, query for all rows regardless of course.
-	 * @return Returns a list of rows as arrays. Returns null if failed.
+	 * @return Returns a list of rows as arrays. Returns an empty list if failed.
 	 */
 	public List<String[]> queryAll(String tablename, String course) {
 		List<String[]> result = new ArrayList<>();
@@ -305,7 +314,7 @@ public class Database {
 				query = "SELECT * FROM " + tablename + " WHERE course=?";
 			}
 			else {
-				return null;
+				return result;
 			}
 		}
 		// Works for both the courses and entries database if null is used in place of course specifier.
@@ -326,7 +335,7 @@ public class Database {
 		}
 		catch (Exception e) {
 			// e.printStackTrace();
-			result = null;
+			// No rows in database corresponding to query; return empty list.
 		}
 		
 		// Close connection to database.
@@ -339,9 +348,7 @@ public class Database {
 			}
 		}
 		
-		if (result.isEmpty()) {
-			return null;
-		}
+		// Return the list of rows or an empty list.
 		return result;
 	}
 	
@@ -373,6 +380,9 @@ public class Database {
 				e.printStackTrace();
 			}
 		}
+		
+		// Recreate the table.
+		createTable(tablename);
 		return result;
 	}
 	

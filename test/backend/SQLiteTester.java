@@ -23,14 +23,14 @@ class SQLiteTester {
 		db.open();
 		db.drop("entries");
 		db.createTable("entries");
-		ids.add(db.insert("entries", "cs151", "Assignment 4a", now, null));
+		ids.add(db.insert("entries", "cs151", "Assignment 4a", now, "JavaFX notes."));
 		db.update("entries", 1, "notes", "These are indeed notes.");
 		ids.add(db.insert("entries", "cs151", "Assignment 4b", now.plusHours(1), null));
 		ids.add(db.insert("entries", "cs151", "Notes", now, null));
 		ids.add(db.insert("entries", "cs149", "HW6", now.minusHours(2), null));
 		ids.add(db.insert("entries", "cs149", "Notes", now.minusHours(1), null));
 		ids.add(db.insert("entries", null, "Interview", now.minusHours(3), null));
-		ids.add(db.insert("entries", "cs161", "Study", now, null));
+		ids.add(db.insert("entries", "cs161", "Study", now, "Midterm 2"));
 		ids.add(db.insert("entries", "cs161", "Study!!", now, null));
 		ids.add(db.insert("entries", "cs185", "Project", now.minusHours(2), null));
 		for (int i = 1; i <= ids.size(); i++) {

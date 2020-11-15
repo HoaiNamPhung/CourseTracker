@@ -85,12 +85,12 @@ public class BinarySearchTree {
 		if (root == null) {
 			root = new Node(key);
 			return root;
-		}
+		}	
 
 		// Recurse down the tree until a leaf is reached.
-		else if ((key.getDateTime().compareTo(root.key.getDateTime())) >= 0) {
+		if (MyDateTime.compareDateTime(key.getDateTime(), root.key.getDateTime()) >= 0) {
 			root.right = insertRecursive(root.right, key);
-		} else if ((key.getDateTime().compareTo(root.key.getDateTime())) < 0) {
+		} else if (MyDateTime.compareDateTime(key.getDateTime(), root.key.getDateTime()) < 0) {
 			root.left = insertRecursive(root.left, key);
 		}
 

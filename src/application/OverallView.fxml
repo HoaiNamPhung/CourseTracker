@@ -13,7 +13,6 @@
 	<center>
 		<TableView fx:id="tableView" prefHeight="865.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 			<columns>
-				<TableColumn fx:id="id" prefWidth="38.0" text="ID" />
 				<TableColumn fx:id="course" prefWidth="206.0" text="Course" />
 				<TableColumn fx:id="name" prefWidth="120.0" text="Name" />
 				<TableColumn fx:id="date" prefWidth="62.0" text="Date" />
@@ -28,7 +27,7 @@
 	<bottom>
 		<ButtonBar maxHeight="35.0" minHeight="35.0" prefHeight="35.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 			<buttons>
-				<Button alignment="CENTER" mnemonicParsing="false" text="Add" />
+				<Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#showAddRowDialog" text="Add" />
 				<Button alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="497.0" text="Courses" />
 			</buttons>
 		</ButtonBar>

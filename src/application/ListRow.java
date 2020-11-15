@@ -7,7 +7,7 @@ import java.time.LocalTime;
 // Contains all instance field members visible to user when they're on a list view.
 public class ListRow {
 
-	private int id;
+	private Integer id;
 	private String course;
 	private String name;
 	private LocalDateTime dateTime;
@@ -38,6 +38,9 @@ public class ListRow {
 	}
 
 	public LocalDate getDate() {
+		if (dateTime == null) {
+			return null;
+		}
 		return dateTime.toLocalDate();
 	}
 
@@ -46,6 +49,9 @@ public class ListRow {
 	}
 	
 	public LocalTime getTime() {
+		if (dateTime == null) {
+			return null;
+		}
 		return dateTime.toLocalTime();
 	}
 

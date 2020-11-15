@@ -18,33 +18,40 @@ public class OverallView implements ListView {
 	
 	@Override
 	/**
-	 * Initializes the list of all entries from database as a sorted list of entries.
+	 * Initializes the list of all entries from database.
 	 * return Returns 1 if successfully initialized. Else, return 0 on failure.
 	 */
 	public int initializeList(Database db) {
 		// Query into SQLite database and get ALL rows.
 		List<String[]> allEntries = db.queryAll("entries", null);
 		
+		if (allEntries == null) {
+			return 0;
+		}
+		// If they don't exist, return an empty list of entries.
+		if (allEntries.isEmpty()) {
+			sortedEntries = new ArrayList<>();
+		}
 		// Add the rows to entries if entries exist.
-		if (allEntries != null) {
+		if (allEntries != null && !allEntries.isEmpty()) {
 			for (String[] row : allEntries) {
 				entries.insert(new Entry(row));
 			}
-			this.sortedEntries = entries.inorderTraversal();
+			sortedEntries = entries.inorderTraversal();
 		}
-		if (sortedEntries != null) {
-			return 1;
-		}
-		return 0;
+		return 1;
 	}
 	
 	@Override
 	public boolean createEntry(Database db, Entry entry) {
+		// Make sure name is not null.
+		if (entry.getName() == null || entry.getName().isEmpty()) {
+			return false;
+		}
 		int id = db.insert("entries", entry.getCourse(), entry.getName(), entry.getDateTime(), entry.getDescription());
-		entries.insert(entry);
-		
-		// TODO: Update overall list GUI to show new entry.
-		
+		Entry newEntry = new Entry(new String[] {Integer.toString(id), entry.getCourse(), entry.getName(), MyDateTime.toString(entry.getDateTime()), entry.getDescription(), null});
+		entries.insert(newEntry);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful insertion to database.
 		if (id > 0) {
@@ -60,9 +67,6 @@ public class OverallView implements ListView {
 		Entry newNote = new Entry(new String[] {Integer.toString(id), course, name, null, description, notes});
 		entries.insert(newNote);
 		
-		// TODO: Update overall list GUI to show new entry.
-		
-		
 		// Return value based on successful insertion to database.
 		if (id > 0) {
 			return true;
@@ -73,10 +77,8 @@ public class OverallView implements ListView {
 	@Override
 	public boolean createTask(Database db, String course, String name, LocalDateTime dateTime, String description) {
 		int id = db.insert("entries", course, name, dateTime, description);
-		Entry newTask = new Entry(new String[] {Integer.toString(id), course, name, dateTime.toString(), description, null});
+		Entry newTask = new Entry(new String[] {Integer.toString(id), course, name,  MyDateTime.toString(dateTime), description, null});
 		entries.insert(newTask);
-		
-		// TODO: Update overall list GUI to show new entry.
 		
 		// Return value based on successful insertion to database.
 		if (id > 0) {
@@ -131,7 +133,7 @@ public class OverallView implements ListView {
 
 	@Override
 	public boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime) {
-		int rv = db.update("entries", id, "dateTime", dateTime.toString());
+		int rv = db.update("entries", id, "dateTime", MyDateTime.toString(dateTime));
 		
 		// Update overall list GUI to show updated entry.
 		
