@@ -13,18 +13,30 @@ public class Database {
 
 	SQLiteDataSource ds = null;
 	
-	/**
-	 * Constructor
+	// Immediately initializes the one and only database instance at the start of the JVM.
+	private static Database myDatabase = new Database();
+	
+	/** 
+	 * Private default constructor to prevent more than one database instantiation.
 	 */
-	public Database() {
+	private Database() {
 		this.open();
+		this.initializeDatabase();
+	}
+	
+	/**
+	 * Retrieves an instance of the singleton, already initialized database.
+	 * @return Returns the instance of the database.
+	 */
+	public static Database getDatabaseInstance() {
+		return myDatabase;
 	}
 	
 	/**
 	 *  Create a connection to database 'lists.db'. If it doesn't exist, it is created.
 	 *  @return Returns false if failed to create to database.
 	 */
-	public boolean open() {
+	private boolean open() {
 		try {
 			ds = new SQLiteDataSource();
 			ds.setUrl("jdbc:sqlite:lists.db");
@@ -37,7 +49,11 @@ public class Database {
 		return true;
 	}
 	
-	public boolean initializeDatabase() {
+	/**
+	 * Initializes the database's tables.
+	 * @return Returns true if both tables were successfully created.
+	 */
+	private boolean initializeDatabase() {
 		int rv1 = createTable("courses");
 		int rv2 = createTable("entries");
 		if ((rv1 & rv2) == 0) {

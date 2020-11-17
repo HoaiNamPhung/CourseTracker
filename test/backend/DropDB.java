@@ -11,8 +11,7 @@ public class DropDB {
 	
 	@Test
 	void test() {
-		Database db = new Database();
-		db.open();
+		Database db = Database.getDatabaseInstance();
 		db.drop("entries");
 	}
 }

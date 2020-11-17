@@ -18,11 +18,9 @@ class SQLiteTester {
 	@Test
 	void test() {
 		LocalDateTime now = LocalDateTime.now();
-		Database db = new Database();
+		Database db = Database.getDatabaseInstance();
 		List<Integer> ids = new ArrayList<>();
-		db.open();
 		db.drop("entries");
-		db.createTable("entries");
 		ids.add(db.insert("entries", "cs151", "Assignment 4a", now, "JavaFX notes."));
 		db.update("entries", 1, "notes", "These are indeed notes.");
 		ids.add(db.insert("entries", "cs151", "Assignment 4b", now.plusHours(1), null));
@@ -87,7 +85,6 @@ class SQLiteTester {
 		
 		System.out.println("Courses in order of insertion to DB:");
 		db.drop("courses");
-		db.createTable("courses");
 		db.insert("courses", "cs151", now);
 		db.insert("courses", "cs149", now);
 		String[] rsCourses1 = db.query("courses", 1);

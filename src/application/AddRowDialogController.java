@@ -47,11 +47,11 @@ public class AddRowDialogController implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		db = Database.getDatabaseInstance();
 	}
 	
-	public void getParentData(Stage stage, Database db, OverallView myOverallView, ObservableList<Entry> tableEntries, TableView<Entry> tableView) {
+	public void getParentData(Stage stage, OverallView myOverallView, ObservableList<Entry> tableEntries, TableView<Entry> tableView) {
 		this.stage = stage;
-		this.db = db;
 		this.myOverallView = myOverallView;
 		this.tableEntries = tableEntries;
 		this.tableView = tableView;

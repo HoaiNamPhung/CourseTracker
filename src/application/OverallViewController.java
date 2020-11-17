@@ -61,8 +61,7 @@ public class OverallViewController implements Initializable {
 		tableView.getColumns().setAll(course, name, date, time, description);
 
 		// Load data from entries in OverallView, which is obtained from database.
-		db = new Database();
-		db.initializeDatabase();
+		db = Database.getDatabaseInstance();
 		myOverallView = new OverallView();
 		myOverallView.initializeList(db);
 		loadTable(myOverallView);
@@ -91,7 +90,7 @@ public class OverallViewController implements Initializable {
 		
 		// Prepare the controller for addRowDialog and pass over variables.
 		AddRowDialogController controller = loader.getController();
-		controller.getParentData(stage, db, myOverallView, tableEntries, tableView);
+		controller.getParentData(stage, myOverallView, tableEntries, tableView);
 		
 		// Show the stage.
 		stage.show();
