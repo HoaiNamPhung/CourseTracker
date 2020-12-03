@@ -8,7 +8,6 @@ import java.util.List;
 import org.sqlite.SQLiteDataSource;
 
 // If SQLite not being recognized, go to Project > Properties > Java Build Path > Add JARs > CourseTracker > sqlite-jdbc-3.32.3.2.jar > OK > Apply and Close
-// TODO: Better exception handling.
 public class Database {
 
 	SQLiteDataSource ds = null;
@@ -179,7 +178,7 @@ public class Database {
 				conn = ds.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.setString(1, coursename);
-				stmt.setString(3, MyDateTime.toString(meetingdatetime));
+				stmt.setString(2, MyDateTime.toString(meetingdatetime));
 				result = stmt.executeUpdate();
 				
 				// Get the new id of the row for returning. If no rows were added, return result as-is.

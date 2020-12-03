@@ -55,16 +55,25 @@ class SQLiteTester {
 		System.out.println(Arrays.toString(rsEntries9));
 		System.out.println("-----------------------------");
 		
-		BinarySearchTree bst = new BinarySearchTree();
-		bst.insert(new Entry(rsEntries1));
-		bst.insert(new Entry(rsEntries2));
-		bst.insert(new Entry(rsEntries3));
-		bst.insert(new Entry(rsEntries4));
-		bst.insert(new Entry(rsEntries5));
-		bst.insert(new Entry(rsEntries6));
-		bst.insert(new Entry(rsEntries7));
-		bst.insert(new Entry(rsEntries8));
-		bst.insert(new Entry(rsEntries9));
+		BinarySearchTree bst = BinarySearchTree.getBSTInstance();
+		Entry entry1 = new Entry(rsEntries1);
+		Entry entry2 = new Entry(rsEntries2);
+		Entry entry3 = new Entry(rsEntries3);
+		Entry entry4 = new Entry(rsEntries4);
+		Entry entry5 = new Entry(rsEntries5);
+		Entry entry6 = new Entry(rsEntries6);
+		Entry entry7 = new Entry(rsEntries7);
+		Entry entry8 = new Entry(rsEntries8);
+		Entry entry9 = new Entry(rsEntries9);
+		bst.insert(entry1);
+		bst.insert(entry2);
+		bst.insert(entry3);
+		bst.insert(entry4);
+		bst.insert(entry5);
+		bst.insert(entry6);
+		bst.insert(entry7);
+		bst.insert(entry8);
+		bst.insert(entry9);
 		
 		System.out.println("Entries in chronological order, as printed by inorderTraversal():");
 		List<Entry> entries = bst.inorderTraversal();
@@ -103,12 +112,12 @@ class SQLiteTester {
 		List<String[]> entriesCs149 = db.queryAll("entries", "cs149");
 		List<String[]> entriesCs147 = db.queryAll("entries", "cs147");
 		
-		assertEquals(allCourses.size(), 2, "Incorrect number of courses read. Check queryAll() implementation.");
-		assertEquals(failedQuery, null, "Incorrect number of courses read. Check queryAll() implementation.");
-		assertEquals(allEntries.size(), 9, "Incorrect number of courses read. Check queryAll() implementation.");
-		assertEquals(entriesCs151.size(), 3, "Incorrect number of courses read. Check queryAll() implementation.");
-		assertEquals(entriesCs149.size(), 2, "Incorrect number of courses read. Check queryAll() implementation.");
-		assertEquals(entriesCs147, null, "Incorrect number of courses read. Check queryAll() implementation.");
+		assertEquals(allCourses.size(), 2, "Incorrect number of entries read. Check queryAll() implementation.");
+		assertEquals(failedQuery.size(), 0, "Incorrect number of entries read. Check queryAll() implementation.");
+		assertEquals(allEntries.size(), 9, "Incorrect number of entries read. Check queryAll() implementation.");
+		assertEquals(entriesCs151.size(), 3, "Incorrect number of entries read. Check queryAll() implementation.");
+		assertEquals(entriesCs149.size(), 2, "Incorrect number of entries read. Check queryAll() implementation.");
+		assertEquals(entriesCs147.size(), 0, "Incorrect number of entries read. Check queryAll() implementation.");
 		
 		System.out.println("All courses:");
 		for (String[] row : allCourses) {
@@ -130,6 +139,22 @@ class SQLiteTester {
 			System.out.println(Arrays.toString(row));
 		}
 		System.out.println("======");
+		
+		// Test delete().
+		System.out.println("Entries in chronological order after deleting entry 5.");
+		bst.delete(entry5);
+		entries = bst.inorderTraversal();
+		System.out.println("------------------------------");
+		
+		System.out.println("Entries in chronological order after deleting oldest entry.");
+		bst.delete(entry2);
+		entries = bst.inorderTraversal();
+		System.out.println("------------------------------");
+		
+		System.out.println("Entries in chronological order after deleting first entry.");
+		bst.delete(entry6);
+		entries = bst.inorderTraversal();
+		System.out.println("------------------------------");
 	}
 
 }

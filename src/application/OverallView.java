@@ -1,8 +1,6 @@
 package application;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 // List view that shows all existing entries.
@@ -12,7 +10,7 @@ public class OverallView implements ListView {
 	List<Entry> sortedEntries;
 
 	public OverallView() {
-		this.entries = new BinarySearchTree();
+		this.entries = BinarySearchTree.getBSTInstance();
 		this.sortedEntries = null;
 	}
 	
@@ -22,23 +20,7 @@ public class OverallView implements ListView {
 	 * return Returns 1 if successfully initialized. Else, return 0 on failure.
 	 */
 	public int initializeList(Database db) {
-		// Query into SQLite database and get ALL rows.
-		List<String[]> allEntries = db.queryAll("entries", null);
-		
-		if (allEntries == null) {
-			return 0;
-		}
-		// If they don't exist, return an empty list of entries.
-		if (allEntries.isEmpty()) {
-			sortedEntries = new ArrayList<>();
-		}
-		// Add the rows to entries if entries exist.
-		if (allEntries != null && !allEntries.isEmpty()) {
-			for (String[] row : allEntries) {
-				entries.insert(new Entry(row));
-			}
-			sortedEntries = entries.inorderTraversal();
-		}
+		sortedEntries = entries.inorderTraversal();
 		return 1;
 	}
 	
@@ -66,6 +48,7 @@ public class OverallView implements ListView {
 		int id = db.insert("entries", course, name, null, description);
 		Entry newNote = new Entry(new String[] {Integer.toString(id), course, name, null, description, notes});
 		entries.insert(newNote);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful insertion to database.
 		if (id > 0) {
@@ -79,6 +62,7 @@ public class OverallView implements ListView {
 		int id = db.insert("entries", course, name, dateTime, description);
 		Entry newTask = new Entry(new String[] {Integer.toString(id), course, name,  MyDateTime.toString(dateTime), description, null});
 		entries.insert(newTask);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful insertion to database.
 		if (id > 0) {
@@ -88,13 +72,10 @@ public class OverallView implements ListView {
 	}
 
 	@Override
-	public boolean deleteEntry(Database db, int id) {
-		int rv = db.delete("entries", id);
-		// Delete the entry from the binary search tree, once we actually need to implement it.
-		
-		
-		// Update overall list GUI to no longer show removed entry.
-		
+	public boolean deleteEntry(Database db, Entry entry) {
+		int rv = db.delete("entries", entry.getId());
+		entries.delete(entry);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful deletion from database.
 		if (rv == 1) {

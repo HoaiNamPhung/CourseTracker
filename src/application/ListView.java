@@ -18,7 +18,7 @@ public interface ListView {
 	boolean createTask(Database db, String course, String name, LocalDateTime dateTime, String description);
 	
 	// Deletion/update based on id, which will automatically be supplied by system when user acts on the corresponding row.
-	boolean deleteEntry(Database db, int id);
+	boolean deleteEntry(Database db, Entry entry);
 	boolean modifyEntryCourse(Database db, int id, String course);
 	boolean modifyEntryName(Database db, int id, String name);
 	boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime);

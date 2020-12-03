@@ -3,29 +3,21 @@ package application;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -44,11 +36,14 @@ public class OverallViewController implements Initializable {
 	private TableColumn<Entry, LocalTime> time;
 	@FXML
 	private TableColumn<Entry, String> description;
+	@FXML
+	private BorderPane rootPane;
 	
 	Database db;
 	OverallView myOverallView;
 	ObservableList<Entry> tableEntries;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
@@ -65,6 +60,21 @@ public class OverallViewController implements Initializable {
 		myOverallView = new OverallView();
 		myOverallView.initializeList(db);
 		loadTable(myOverallView);
+		
+		// Set up listener for entry double click. On double click, go to entry details.
+		tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent mouseEvent) {
+		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+		            if(mouseEvent.getClickCount() == 2){
+		            	Entry selectedEntry = tableView.getSelectionModel().getSelectedItem();
+		            	if (selectedEntry != null) {
+		            		loadEntryDetails(selectedEntry);
+		            	}
+		            }
+		        }
+		    }
+		});
 	}
 	
 	public void loadTable(OverallView overallView) {
@@ -96,4 +106,24 @@ public class OverallViewController implements Initializable {
 		stage.show();
 		return stage;
 	}
+	
+	// Delete a selected row.
+    public void deleteRow() {
+    	// Remove the row from the table.
+    	Entry selectedEntry = tableView.getSelectionModel().getSelectedItem();
+    	if (selectedEntry != null) {
+    		tableView.getItems().remove(selectedEntry);
+        	myOverallView.deleteEntry(db, selectedEntry);
+    	}
+    }
+    
+    // Load entry details in the same window.
+    public void loadEntryDetails(Entry entry) {
+    	try {
+			BorderPane pane = FXMLLoader.load(getClass().getResource("EntryDetails.fxml"));
+			rootPane.getChildren().setAll(pane);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
 }

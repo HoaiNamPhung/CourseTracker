@@ -15,7 +15,7 @@ public class CourseView implements ListView {
 	public CourseView(String courseName, LocalDateTime courseMeetingDateTime) {
 		this.courseName = courseName;
 		this.courseMeetingDateTime = courseMeetingDateTime;
-		this.entries = new BinarySearchTree();
+		this.entries = BinarySearchTree.getBSTInstance();
 		this.sortedEntries = null;
 	}
 	
@@ -67,7 +67,7 @@ public class CourseView implements ListView {
 	}
 
 	@Override
-	public boolean deleteEntry(Database db, int id) {
+	public boolean deleteEntry(Database db, Entry entry) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -7,26 +7,54 @@ import java.util.List;
 // Chronologically sorted binary tree w/ O(N) full traversal, O(log(N)) delete, O(log(N)) add. 
 // If given DateTime is the same for two nodes/entries, they are sorted in order of insertion.
 public class BinarySearchTree {
+	
+	// Immediately initializes the one and only database instance at the start of the JVM.
+	private static BinarySearchTree myBST = new BinarySearchTree();
+
+	public Node root;
+	
+	/** 
+	 * Private default constructor to prevent more than one BST instantiation.
+	 */
+	private BinarySearchTree() {
+		this.root = null;
+	}
+	
+	/**
+	 * Retrieves an instance of the singleton, already initialized BST.
+	 * @return Returns the instance of the BST.
+	 */
+	public static BinarySearchTree getBSTInstance() {
+		return myBST;
+	}
 
 	// Node used for BST.
 	private class Node {
 		public Entry key; // Key == entry. We sort by its DateTime.
 		public Node left;
 		public Node right;
-		public Node parent; // TODO: Implement parent assigning w/in insert once we need to implement delete.
 
 		public Node(Entry key) {
 			this.key = key;
 			this.left = null;
 			this.right = null;
-			this.parent = null;
 		}
 	}
-
-	public Node root;
-
-	public BinarySearchTree() {
-		this.root = null;
+	
+	/**
+	 * Initialize the BST from database.
+	 * @param db The database to get data from.
+	 */
+	public static void initializeBSTFromDB(Database db) {
+		// Query into SQLite database and get ALL rows.
+		List<String[]> allEntries = db.queryAll("entries", null);
+		
+		// Add the rows to BST.
+		if (allEntries != null && !allEntries.isEmpty()) {
+			for (String[] row : allEntries) {
+				myBST.insert(new Entry(row));
+			}
+		}
 	}
 	
 	/**
@@ -97,6 +125,64 @@ public class BinarySearchTree {
 		// Given root's key is the desired key. Do nothing and return it as is.
 		return root;
 	}
+	
+	/**
+	 * Delete a Node with a key containing given ID from the BST.
+	 * @param id The id of the deleted node.
+	 */
+	public void delete(Entry key) {
+		root = deleteRecursive(root, key);
+	}
+	
+	// Recursive delete implementation.
+	private Node deleteRecursive(Node root, Entry key) {
+		// Base case: tree is empty; nothing to be deleted.
+		if (root == null) {
+			return root;
+		}
+		
+		// Check if current Node is the one to delete.
+		if (root.key.getId() == key.getId()) {
+			// Case 1: Node has 1 or 0 children.
+			// If 0 children, the node becomes null.
+			// If 1 child, the node is replaced by its child.
+			if (root.left == null) {
+				root = root.right;
+				return root;
+			}
+			else if (root.right == null) {
+				root = root.left;
+				return root;
+			}
+			// Case 2: Node has 2 children.
+			else {
+				// Replace the deleted root with the minimum value of the tree.
+				root.key = minValue(root.right);
+				// Get rid of the previous version of the minimum value.
+				root.right = deleteRecursive(root.right, root.key);
+			}	
+		}
+		
+		// Recurse down the tree until a Node with given ID is reached.
+		else if (MyDateTime.compareDateTime(key.getDateTime(), root.key.getDateTime()) < 0)
+            root.left = deleteRecursive(root.left, key);
+        else if (MyDateTime.compareDateTime(key.getDateTime(), root.key.getDateTime()) >= 0)
+            root.right = deleteRecursive(root.right, key);
+		
+		return root;
+	}
+	
+	// Gets the minimum value of the tree.
+    private Entry minValue(Node root)
+    {
+        Entry minVal = root.key;
+        while (root.left != null) 
+        {
+            minVal = root.left.key;
+            root = root.left;
+        }
+        return minVal;
+    }
 
 	/**
 	 * Recursively does an in-order traversal of the BST (and stores the ordered
@@ -104,7 +190,9 @@ public class BinarySearchTree {
 	 */
 	public List<Entry> inorderTraversal() {
 		List<Entry> entries = new ArrayList<>();
+		System.out.println("======in-order START======");
 		entries = inorderRecursive(this.root, entries);
+		System.out.println("======in-order DONE======");
 		return entries;
 	}
 
