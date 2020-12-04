@@ -83,13 +83,39 @@ public class OverallView implements ListView {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean modifyEntry(Database db, Entry entry, Entry newEntry) {
+		int id = entry.getId();
+		
+		// Update database's entry.
+		int rv = db.update("entries", id, "course", newEntry.getCourse());
+		rv = db.update("entries", id, "name", newEntry.getName()) ;
+		rv = db.update("entries", id, "description", newEntry.getDescription());
+		rv = db.update("entries", id, "notes", newEntry.getNotes());
+		rv = db.update("entries", id, "dateTime", MyDateTime.toString(newEntry.getDateTime()));
+		
+		// Update entry values in BST.
+		entries.delete(entry);
+		newEntry.setId(id);
+		entries.insert(newEntry);
+		sortedEntries = entries.inorderTraversal();
+		
+		// Return value based on successful deletion from database.
+		if (rv == 1) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
-	public boolean modifyEntryCourse(Database db, int id, String course) {
+	public boolean modifyEntryCourse(Database db, Entry entry, String course) {
+		int id = entry.getId();
 		int rv = db.update("entries", id, "course", course);
-		
-		// Update overall list GUI to show updated entry.
-		
+		entries.delete(entry);
+		entry.setCourse(course);
+		entries.insert(entry);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful deletion from database.
 		if (rv == 1) {
@@ -99,11 +125,13 @@ public class OverallView implements ListView {
 	}
 
 	@Override
-	public boolean modifyEntryName(Database db, int id, String name) {
+	public boolean modifyEntryName(Database db, Entry entry, String name) {
+		int id = entry.getId();
 		int rv = db.update("entries", id, "name", name);
-		
-		// Update overall list GUI to show updated entry.
-		
+		entries.delete(entry);
+		entry.setName(name);
+		entries.insert(entry);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful deletion from database.
 		if (rv == 1) {
@@ -113,11 +141,14 @@ public class OverallView implements ListView {
 	}
 
 	@Override
-	public boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime) {
+	public boolean modifyEntryDateTime(Database db, Entry entry, LocalDateTime dateTime) {
+		int id = entry.getId();
 		int rv = db.update("entries", id, "dateTime", MyDateTime.toString(dateTime));
-		
-		// Update overall list GUI to show updated entry.
-		
+		entries.delete(entry);
+		entry.setDate(dateTime.toLocalDate());
+		entry.setTime(dateTime.toLocalTime());
+		entries.insert(entry);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful deletion from database.
 		if (rv == 1) {
@@ -127,11 +158,13 @@ public class OverallView implements ListView {
 	}
 
 	@Override
-	public boolean modifyEntryDescription(Database db, int id, String description) {
+	public boolean modifyEntryDescription(Database db, Entry entry, String description) {
+		int id = entry.getId();
 		int rv = db.update("entries", id, "description", description);
-		
-		// Update overall list GUI to show updated entry.
-		
+		entries.delete(entry);
+		entry.setDescription(description);
+		entries.insert(entry);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful deletion from database.
 		if (rv == 1) {
@@ -141,10 +174,13 @@ public class OverallView implements ListView {
 	}
 
 	@Override
-	public boolean modifyEntryNotes(Database db, int id, String notes) {
+	public boolean modifyEntryNotes(Database db, Entry entry, String notes) {
+		int id = entry.getId();
 		int rv = db.update("entries", id, "notes", notes);
-		
-		// Probably don't need to update GUI? We can just refresh the entry when it is clicked on so that it shows the new notes inside.
+		entries.delete(entry);
+		entry.setNotes(notes);
+		entries.insert(entry);
+		sortedEntries = entries.inorderTraversal();
 		
 		// Return value based on successful deletion from database.
 		if (rv == 1) {

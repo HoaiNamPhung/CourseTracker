@@ -3,7 +3,7 @@ package application;
 import java.time.LocalDateTime;
 
 // Subclass of list row that also keeps track of notes, only visible upon clicking an "entry" in a list view.
-public class Entry extends ListRow {
+public class Entry extends ListRow implements Cloneable {
 	private String notes;
 	
 	// Default constructor.
@@ -36,5 +36,9 @@ public class Entry extends ListRow {
 		String str = "[" + getId() + ", " + getCourse() + ", " + getName() + ", " + getDateTime() +
 				", " + getDescription() + ", " + getNotes() + "]";
 		return str;
+	}
+	
+	public Entry clone() throws CloneNotSupportedException {
+		return (Entry) super.clone();
 	}
 }

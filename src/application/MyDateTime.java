@@ -41,7 +41,7 @@ public class MyDateTime {
 	}
 	
 	/**
-	 * Compares two LocalDateTimes to see which is chronologically greater.
+	 * Compares two LocalDateTimes to see which is chronologically greater. Used specfically for BST.
 	 * @param a The LocalDateTime we wish to compare.
 	 * @param b The LocalDateTime being compared to.
 	 * @return Returns -1 if less than, 0 if equal, 1 if greater than.
@@ -57,8 +57,52 @@ public class MyDateTime {
 		}
 		
 		// Normal comparison in case neither are null.
-		return a.compareTo(b);
+		return a.compareTo(b);	
+	}
+	
+	/**
+	 * Compares two LocalDates to see which is chronologically greater.
+	 * @param a The LocalDate we wish to compare.
+	 * @param b The LocalDate being compared to.
+	 * @return Returns -1 if less than, 0 if equal, 1 if greater than.
+	 */
+	public static int compareDate(LocalDate a, LocalDate b) {
 		
+		if (a == null && b == null) {
+			return 0;
+		}
+		// If null, assume greatest value.
+		else if (a == null) {
+			return 1;
+		}
+		else if (b == null) {
+			return -1;
+		}
 		
+		// Normal comparison in case neither are null.
+		return a.compareTo(b);	
+	}
+	
+	/**
+	 * Compares two LocalTimes to see which is chronologically greater.
+	 * @param a The LocalTime we wish to compare.
+	 * @param b The LocalTime being compared to.
+	 * @return Returns -1 if less than, 0 if equal, 1 if greater than.
+	 */
+	public static int compareTime(LocalTime a, LocalTime b) {
+		
+		if (a == null && b == null) {
+			return 0;
+		}
+		// If null, assume greatest value.
+		else if (a == null) {
+			return 1;
+		}
+		else if (b == null) {
+			return -1;
+		}
+		
+		// Normal comparison in case neither are null.
+		return a.compareTo(b);	
 	}
 }

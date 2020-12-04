@@ -73,31 +73,37 @@ public class CourseView implements ListView {
 	}
 
 	@Override
-	public boolean modifyEntryCourse(Database db, int id, String course) {
+	public boolean modifyEntry(Database db, Entry entry, Entry newEntry) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
+	public boolean modifyEntryCourse(Database db, Entry entry, String course) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryName(Database db, int id, String name) {
+	public boolean modifyEntryName(Database db, Entry entry, String name) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime) {
+	public boolean modifyEntryDateTime(Database db, Entry entry, LocalDateTime dateTime) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryDescription(Database db, int id, String description) {
+	public boolean modifyEntryDescription(Database db, Entry entry, String description) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean modifyEntryNotes(Database db, int id, String notes) {
+	public boolean modifyEntryNotes(Database db, Entry entry, String notes) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -106,5 +112,4 @@ public class CourseView implements ListView {
 	public List<Entry> getSortedEntries() {
 		return sortedEntries;
 	}
-	
 }

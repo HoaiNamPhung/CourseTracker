@@ -128,7 +128,7 @@ public class BinarySearchTree {
 	
 	/**
 	 * Delete a Node with a key containing given ID from the BST.
-	 * @param id The id of the deleted node.
+	 * @param key The key of the deleted node.
 	 */
 	public void delete(Entry key) {
 		root = deleteRecursive(root, key);

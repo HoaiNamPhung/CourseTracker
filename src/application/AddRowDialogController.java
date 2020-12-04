@@ -34,6 +34,7 @@ public class AddRowDialogController implements Initializable {
 	
 	// Variables passed from OverallViewController.
 	Stage stage;
+	OverallViewController ovc;
 	Database db;
 	OverallView myOverallView;
 	ObservableList<Entry> tableEntries;
@@ -44,13 +45,22 @@ public class AddRowDialogController implements Initializable {
 		db = Database.getDatabaseInstance();
 	}
 	
-	public void getParentData(Stage stage, OverallView myOverallView, ObservableList<Entry> tableEntries, TableView<Entry> tableView) {
+	/**
+	 * Retrieve the newly created stage from a parent stage for use, along with the parent stage's context.
+	 * @param ovc The parent stage.
+	 * @param stage The newly created stage to be used as the AddRowDialog.
+	 */
+	public void getParentData(OverallViewController ovc, Stage stage) {
+		this.ovc = ovc;
 		this.stage = stage;
-		this.myOverallView = myOverallView;
-		this.tableEntries = tableEntries;
-		this.tableView = tableView;
+		myOverallView = ovc.getOverallView();
+		tableEntries = ovc.getTableEntries();
+		tableView = ovc.getTableView();
 	}
 	
+	/**
+	 * Close the window.
+	 */
 	@FXML
 	public void onBtnCancel() {
 		if (stage != null) {
@@ -58,6 +68,9 @@ public class AddRowDialogController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Create a new entry based on the state of the user input fields.
+	 */
 	@FXML
 	public void onBtnAdd() {
 		// Parse fields for user input.

@@ -19,11 +19,12 @@ public interface ListView {
 	
 	// Deletion/update based on id, which will automatically be supplied by system when user acts on the corresponding row.
 	boolean deleteEntry(Database db, Entry entry);
-	boolean modifyEntryCourse(Database db, int id, String course);
-	boolean modifyEntryName(Database db, int id, String name);
-	boolean modifyEntryDateTime(Database db, int id, LocalDateTime dateTime);
-	boolean modifyEntryDescription(Database db, int id, String description);
-	boolean modifyEntryNotes(Database db, int id, String notes);
+	public boolean modifyEntry(Database db, Entry entry, Entry newEntry);
+	boolean modifyEntryCourse(Database db, Entry entry, String course);
+	boolean modifyEntryName(Database db, Entry entry, String name);
+	boolean modifyEntryDateTime(Database db, Entry entry, LocalDateTime dateTime);
+	boolean modifyEntryDescription(Database db, Entry entry, String description);
+	boolean modifyEntryNotes(Database db, Entry entry, String notes);
 	
 	// Retrieve the sorted list view.
 	List<Entry> getSortedEntries();

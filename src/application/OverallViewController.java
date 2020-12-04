@@ -39,9 +39,11 @@ public class OverallViewController implements Initializable {
 	@FXML
 	private BorderPane rootPane;
 	
+	// Variables
 	Database db;
 	OverallView myOverallView;
 	ObservableList<Entry> tableEntries;
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -69,7 +71,7 @@ public class OverallViewController implements Initializable {
 		            if(mouseEvent.getClickCount() == 2){
 		            	Entry selectedEntry = tableView.getSelectionModel().getSelectedItem();
 		            	if (selectedEntry != null) {
-		            		loadEntryDetails(selectedEntry);
+		            		showEntryDetails(selectedEntry);
 		            	}
 		            }
 		        }
@@ -77,34 +79,13 @@ public class OverallViewController implements Initializable {
 		});
 	}
 	
+	/**
+	 * Adapts the contents of an overallView into a table's rows.
+	 * @param overallView The overall view being loaded into the table.
+	 */
 	public void loadTable(OverallView overallView) {
 		tableEntries = FXCollections.observableArrayList(overallView.getSortedEntries());
 		tableView.setItems(tableEntries);
-	}
-	
-	@FXML
-	public Stage showAddRowDialog() {
-	
-		// Create the new stage for the dialog.
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("AddRowDialog.fxml"));
-		Stage stage = new Stage(StageStyle.DECORATED);
-		try {
-			stage.setScene(new Scene(loader.load(), 300, 280));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		stage.setTitle("Add an entry");
-		stage.initModality(Modality.APPLICATION_MODAL);
-		Stage currStage = (Stage) tableView.getScene().getWindow();
-		stage.initOwner(currStage);
-		
-		// Prepare the controller for addRowDialog and pass over variables.
-		AddRowDialogController controller = loader.getController();
-		controller.getParentData(stage, myOverallView, tableEntries, tableView);
-		
-		// Show the stage.
-		stage.show();
-		return stage;
 	}
 	
 	// Delete a selected row.
@@ -116,8 +97,80 @@ public class OverallViewController implements Initializable {
         	myOverallView.deleteEntry(db, selectedEntry);
     	}
     }
+	
+	/**
+	 * Loads and shows the AddRowDialog window.
+	 * @return Returns the new AddRowDialog window as a stage.
+	 */
+    @FXML
+	public Stage showAddRowDialog() {
+	
+		// Create the new stage for the dialog.
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("AddRowDialog.fxml"));
+		Stage newStage = new Stage(StageStyle.DECORATED);
+		try {
+			newStage.setScene(new Scene(loader.load(), 300, 280));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		newStage.setTitle("Add an entry");
+		newStage.initModality(Modality.APPLICATION_MODAL);
+		Stage currStage = (Stage) tableView.getScene().getWindow();
+		newStage.initOwner(currStage);
+		
+		// Prepare the controller for addRowDialog and pass over variables.
+		AddRowDialogController controller = loader.getController();
+		controller.getParentData(this, newStage);
+		
+		// Show the stage.
+		newStage.show();
+		return newStage;
+	}
     
-    // Load entry details in the same window.
+	/**
+	 * Loads and shows the EntryDetails window for a given entry.
+	 * @param selectedEntry The entry the entry details belong to.
+	 * @return Returns the EntryDetails window as a stage.
+	 */
+	public Stage showEntryDetails(Entry selectedEntry) {
+	
+		// Create the new stage for the entry details window.
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("EntryDetails.fxml"));
+		Stage newStage = new Stage(StageStyle.DECORATED);
+		try {
+			newStage.setScene(new Scene(loader.load(), 600, 800));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		newStage.setTitle(selectedEntry.getName());
+		// An entry's details should not block user from using other windows.
+		newStage.initModality(Modality.NONE);
+		Stage currStage = (Stage) tableView.getScene().getWindow();
+		newStage.initOwner(currStage);
+		
+		// Prepare the controller for entry details and pass over variables.
+		EntryDetailsController controller = loader.getController();
+		controller.getParentData(this, newStage, selectedEntry);
+		
+		// Show the stage.
+		newStage.show();
+		return newStage;
+	}
+	
+	/* Getters and Setters */
+	public TableView<Entry> getTableView() {
+		return tableView;
+	}
+	
+	public OverallView getOverallView() {
+		return myOverallView;
+	}
+	
+	public ObservableList<Entry> getTableEntries() {
+		return tableEntries;
+	}
+    
+    /*
     public void loadEntryDetails(Entry entry) {
     	try {
 			BorderPane pane = FXMLLoader.load(getClass().getResource("EntryDetails.fxml"));
@@ -126,4 +179,5 @@ public class OverallViewController implements Initializable {
 			e.printStackTrace();
 		}
     }
+    */
 }

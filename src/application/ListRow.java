@@ -45,7 +45,12 @@ public class ListRow {
 	}
 
 	public void setDate(LocalDate date) {
-		this.dateTime = dateTime.toLocalTime().atDate(date);
+		if (dateTime == null) {
+			this.dateTime = date.atStartOfDay();
+		}
+		else {
+			this.dateTime = dateTime.toLocalTime().atDate(date);
+		}
 	}
 	
 	public LocalTime getTime() {
@@ -56,7 +61,12 @@ public class ListRow {
 	}
 
 	public void setTime(LocalTime time) {
-		this.dateTime = dateTime.toLocalDate().atTime(time);
+		if (dateTime == null) {
+			this.dateTime = time.atDate(MyDateTime.MAX_DATE);
+		}
+		else {
+			this.dateTime = dateTime.toLocalDate().atTime(time);
+		}
 	}
 	
 	public LocalDateTime getDateTime() {
