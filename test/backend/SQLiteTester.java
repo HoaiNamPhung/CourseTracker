@@ -3,6 +3,7 @@ package backend;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,12 +13,13 @@ import org.junit.jupiter.api.Test;
 import application.BinarySearchTree;
 import application.Database;
 import application.Entry;
+import application.MyDateTime;
 
 class SQLiteTester {
 
 	@Test
 	void test() {
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.parse(LocalDateTime.now().format(MyDateTime.DATE_TIME_FORMAT), MyDateTime.DATE_TIME_FORMAT);
 		Database db = Database.getDatabaseInstance();
 		List<Integer> ids = new ArrayList<>();
 		db.drop("entries");
@@ -94,8 +96,8 @@ class SQLiteTester {
 		
 		System.out.println("Courses in order of insertion to DB:");
 		db.drop("courses");
-		db.insert("courses", "cs151", now);
-		db.insert("courses", "cs149", now);
+		db.insert("courses", "cs151", now, null);
+		db.insert("courses", "cs149", now, "Heyo!");
 		String[] rsCourses1 = db.query("courses", 1);
 		String[] rsCourses2 = db.query("courses", 2);
 		String[] rsCourses3 = db.query("courses", 3);

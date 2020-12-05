@@ -24,6 +24,18 @@ public class Entry extends ListRow implements Cloneable {
 		setNotes(colArr[5]);
 	}
 	
+	// Constructor given an array return value OF COURSES that was queried from our SQLite database.
+	public Entry(String[] colArr, boolean isCourse) {
+		if (colArr[0] != null && !(colArr[0].equals(""))) {
+			setId(Integer.parseInt(colArr[0]));
+		}
+		setCourse(colArr[1]);
+		if (colArr[2] != null && !(colArr[2].equals("")))  {
+			setDateTime(LocalDateTime.parse(colArr[2]));
+		}
+		setDescription(colArr[3]);
+	}
+	
 	public String getNotes() {
 		return notes;
 	}

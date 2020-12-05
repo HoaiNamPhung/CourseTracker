@@ -14,8 +14,6 @@ public interface ListView {
 
 	// Booleans return true if successful, false if failed.
 	boolean createEntry(Database db, Entry entry);
-	boolean createNote(Database db, String course, String name, String description, String notes);
-	boolean createTask(Database db, String course, String name, LocalDateTime dateTime, String description);
 	
 	// Deletion/update based on id, which will automatically be supplied by system when user acts on the corresponding row.
 	boolean deleteEntry(Database db, Entry entry);

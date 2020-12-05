@@ -3,6 +3,7 @@ package application;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -14,8 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class EntryDetailsController implements Initializable {
@@ -34,8 +33,6 @@ public class EntryDetailsController implements Initializable {
 	private TextArea notes;
 	@FXML
 	private Label errorMsg;
-	@FXML
-	private BorderPane rootPane;
 	
 	// Variables passed from OverallViewController.
 	Stage stage;
@@ -45,6 +42,7 @@ public class EntryDetailsController implements Initializable {
 	ObservableList<Entry> tableEntries;
 	TableView<Entry> tableView;
 	Entry entry;
+	String currStageTitle;
 	
 	
 	@Override
@@ -65,6 +63,7 @@ public class EntryDetailsController implements Initializable {
 		this.myOverallView = ovc.getOverallView();
 		this.tableEntries = ovc.getTableEntries();
 		this.tableView = ovc.getTableView();
+		this.currStageTitle = ovc.getCurrStageTitle();
 		
 		// Initialize all the current values of the entry.
 		name.setText(entry.getName());
@@ -175,6 +174,23 @@ public class EntryDetailsController implements Initializable {
 			boolean insertSuccess = myOverallView.modifyEntry(db, entry, newEntry);
 			if (insertSuccess) {
 				tableEntries = FXCollections.observableArrayList(myOverallView.getSortedEntries());
+				
+				// If currently in CourseView rather than OverallView, remove all unrelated entries.
+				if (!(currStageTitle.equals("General") || currStageTitle.equals("Courses"))) {
+					Iterator<Entry> iterator = tableEntries.iterator(); 
+					while (iterator.hasNext()) {
+					    Entry entry = iterator.next();
+					    if (entry.getCourse() == null || entry.getCourse().isEmpty()) {
+							if (!(currStageTitle == null || currStageTitle.isEmpty())) {
+								iterator.remove();
+							}
+						}
+						else if (!entry.getCourse().equals(currStageTitle)) {
+							iterator.remove();
+						}
+					}
+				}
+				// Display the updated table.
 				tableView.setItems(tableEntries);
 				entry = newEntry;
 			}

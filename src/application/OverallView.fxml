@@ -29,7 +29,7 @@
 		<ButtonBar maxHeight="35.0" minHeight="35.0" prefHeight="35.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 			<buttons>
 				<Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#showAddRowDialog" text="Add" />
-				<Button alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="497.0" text="Courses" />
+				<Button fx:id="navBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#onBtnNavigate" prefHeight="25.0" prefWidth="497.0" text="Courses" />
             <Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#deleteRow" prefHeight="25.0" prefWidth="497.0" text="Delete Selected" />
 			</buttons>
          <opaqueInsets>

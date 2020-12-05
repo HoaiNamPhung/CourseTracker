@@ -4,6 +4,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -11,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -19,8 +19,6 @@ import javafx.stage.Stage;
 
 public class AddRowDialogController implements Initializable {
 
-	@FXML
-	private Label label;
 	@FXML
 	private TextField courseField;
 	@FXML
@@ -39,6 +37,8 @@ public class AddRowDialogController implements Initializable {
 	OverallView myOverallView;
 	ObservableList<Entry> tableEntries;
 	TableView<Entry> tableView;
+	String currStageTitle;
+	LocalTime meetingTime;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -56,6 +56,17 @@ public class AddRowDialogController implements Initializable {
 		myOverallView = ovc.getOverallView();
 		tableEntries = ovc.getTableEntries();
 		tableView = ovc.getTableView();
+		currStageTitle = ovc.getCurrStageTitle();
+		meetingTime = ovc.getMeetingTime();
+		
+		// If in CourseView, initialize course and time fields to be the same as the Course's by default.
+		if (!(currStageTitle.equals("General") || currStageTitle.equals("Courses"))) {
+			courseField.setText(currStageTitle);
+			timeField.setText("");
+			if (meetingTime != null) {
+				timeField.setText(meetingTime.toString());	
+			}
+		}
 	}
 	
 	/**
@@ -87,10 +98,27 @@ public class AddRowDialogController implements Initializable {
 		String description = descriptionField.getText();
 		String[] fieldArr = {null, course, name, dateTime, description, null};
 		
-		// Add to database and overallview, then update the table with new values by reloading it.
+		// Add to database, then update the table with new values by reloading it.
 		boolean insertSuccess = myOverallView.createEntry(db, new Entry(fieldArr));
 		if (insertSuccess) {
 			tableEntries = FXCollections.observableArrayList(myOverallView.getSortedEntries());
+			
+			// If currently in CourseView rather than OverallView, remove all unrelated entries.
+			if (!(currStageTitle.equals("General") || currStageTitle.equals("Courses"))) {
+				Iterator<Entry> iterator = tableEntries.iterator(); 
+				while (iterator.hasNext()) {
+				    Entry entry = iterator.next();
+				    if (entry.getCourse() == null || entry.getCourse().isEmpty()) {
+						if (!(currStageTitle == null || currStageTitle.isEmpty())) {
+							iterator.remove();
+						}
+					}
+					else if (!entry.getCourse().equals(currStageTitle)) {
+						iterator.remove();
+					}
+				}
+			}
+			// Display the updated table.
 			tableView.setItems(tableEntries);
 			
 			// Close the window.

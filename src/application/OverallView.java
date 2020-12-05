@@ -43,35 +43,6 @@ public class OverallView implements ListView {
 	}
 
 	@Override
-	public boolean createNote(Database db, String course, String name, String description, String notes) {
-		// When we implement CourseView, we will also set the entry dateTime to the course's meetingDateTime, rather than null.
-		int id = db.insert("entries", course, name, null, description);
-		Entry newNote = new Entry(new String[] {Integer.toString(id), course, name, null, description, notes});
-		entries.insert(newNote);
-		sortedEntries = entries.inorderTraversal();
-		
-		// Return value based on successful insertion to database.
-		if (id > 0) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean createTask(Database db, String course, String name, LocalDateTime dateTime, String description) {
-		int id = db.insert("entries", course, name, dateTime, description);
-		Entry newTask = new Entry(new String[] {Integer.toString(id), course, name,  MyDateTime.toString(dateTime), description, null});
-		entries.insert(newTask);
-		sortedEntries = entries.inorderTraversal();
-		
-		// Return value based on successful insertion to database.
-		if (id > 0) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	public boolean deleteEntry(Database db, Entry entry) {
 		int rv = db.delete("entries", entry.getId());
 		entries.delete(entry);

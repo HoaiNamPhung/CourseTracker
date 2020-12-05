@@ -3,11 +3,13 @@ package application;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /** Static handler for DateTime in case the value is null. */
 public class MyDateTime {
 	
 	public static final LocalDate MAX_DATE = LocalDate.parse("3000-01-01");
+	public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
 	
 	/** 
 	 * Gets the DateTime as a string.

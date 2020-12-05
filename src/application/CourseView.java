@@ -55,18 +55,6 @@ public class CourseView implements ListView {
 	}
 
 	@Override
-	public boolean createNote(Database db, String course, String name, String description, String notes) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean createTask(Database db, String course, String name, LocalDateTime dateTime, String description) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean deleteEntry(Database db, Entry entry) {
 		// TODO Auto-generated method stub
 		return false;

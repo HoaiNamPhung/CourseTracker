@@ -74,7 +74,8 @@ public class Database {
 			query = "CREATE TABLE IF NOT EXISTS courses ("
 					+ "id INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "coursename TEXT NOT NULL,"
-					+ "meetingdatetime TEXT)";
+					+ "meetingdatetime TEXT,"
+					+ "coursedescription TEXT)";
 		}
 		else if (tablename.equals("entries")) {
 			query = "CREATE TABLE IF NOT EXISTS entries ("
@@ -168,17 +169,18 @@ public class Database {
 	 * @param meetingdatetime The meeting date and time of the new course.
 	 * @return Returns -1 if exception occurs, wrong parameters for given tablename, or invalid table. Otherwise, returns id of inserted row.
 	 */
-	public int insert(String tablename, String coursename, LocalDateTime meetingdatetime) {
+	public int insert(String tablename, String coursename, LocalDateTime meetingdatetime, String coursedescription) {
 		int result = -1;
 		Connection conn = null;
 		if (tablename.equals("courses")) {
-			String query = "INSERT INTO courses (coursename, meetingdatetime)"
-					+ " VALUES (?,?)"; 
+			String query = "INSERT INTO courses (coursename, meetingdatetime, coursedescription)"
+					+ " VALUES (?,?,?)"; 
 			try {
 				conn = ds.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.setString(1, coursename);
 				stmt.setString(2, MyDateTime.toString(meetingdatetime));
+				stmt.setString(3, coursedescription);
 				result = stmt.executeUpdate();
 				
 				// Get the new id of the row for returning. If no rows were added, return result as-is.
@@ -415,7 +417,8 @@ public class Database {
 			        int id = rs.getInt(1);
 			        String coursename = rs.getString(2);
 			        String meetingdatetime = rs.getString(3);	    
-			        String row[] = {Integer.toString(id), coursename, meetingdatetime};
+			        String coursedescription = rs.getString(4);	  
+			        String row[] = {Integer.toString(id), coursename, meetingdatetime, coursedescription};
 			        rows.add(row);
 				}
 				return rows;
